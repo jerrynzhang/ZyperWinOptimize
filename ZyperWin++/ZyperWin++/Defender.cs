@@ -8,19 +8,32 @@ using System.Windows.Forms;
 
 namespace ZyperWin__
 {
+    /// <summary>
+    /// Windows Defender 管理页面：检测 Defender 服务状态并提供启用/禁用的操作入口。
+    /// 显示各项服务状态（存在性、是否允许运行、是否正在运行）并设置对应的界面指示。
+    /// </summary>
     public partial class Defender : UserControl
     {
+        /// <summary>
+        /// 构造函数：初始化组件并刷新 Defender 状态显示。
+        /// </summary>
         public Defender()
         {
             InitializeComponent();
             RefreshDefenderStatus();
         }
 
+        /// <summary>
+        /// 刷新 Defender 状态（入口），会触发对 Defender 服务与安全中心状态的检测。
+        /// </summary>
         private void RefreshDefenderStatus()
         {
             CheckWinDefendExistence();
         }
 
+        /// <summary>
+        /// 检测系统中是否安装存在 WinDefend 服务，并根据检测结果更新界面与按钮状态。
+        /// </summary>
         private void CheckWinDefendExistence()
         {
             try
@@ -114,6 +127,9 @@ namespace ZyperWin__
             button2.Enabled = false;
         }
 
+        /// <summary>
+        /// 检查 WinDefend 服务的运行许可与运行状态，并在界面上给予可视化提示。
+        /// </summary>
         private void CheckWinDefendServiceStatus()
         {
             try
@@ -181,6 +197,9 @@ namespace ZyperWin__
             }
         }
 
+        /// <summary>
+        /// 检查 SecurityHealthService（安全中心）的状态并更新相应标签。
+        /// </summary>
         private void CheckSecurityHealthServiceStatus()
         {
             try
@@ -223,6 +242,9 @@ namespace ZyperWin__
             }
         }
 
+        /// <summary>
+        /// 根据各检测项的显示状态计算总体图标状态（Success/Warn/Error）。
+        /// </summary>
         private void UpdateIconState()
         {
             int disabledCount = 0;
@@ -263,6 +285,11 @@ namespace ZyperWin__
             }
         }
 
+        /// <summary>
+        /// 检查指定服务的启动类型是否为禁用（Start == 4）。
+        /// </summary>
+        /// <param name="serviceName">服务名</param>
+        /// <returns>禁用返回 true，否则 false</returns>
         private bool IsServiceDisabled(string serviceName)
         {
             try
@@ -285,6 +312,9 @@ namespace ZyperWin__
             return false;
         }
 
+        /// <summary>
+        /// 响应“禁用 Defender”按钮：调用外部脚本禁用 Defender，并刷新状态。
+        /// </summary>
         private void button1_Click(object sender, EventArgs e)
         {
             var MainWindow = this.ParentForm as MainWindow;
@@ -328,6 +358,9 @@ namespace ZyperWin__
             }
         }
 
+        /// <summary>
+        /// 响应“启用 Defender”按钮：调用外部脚本启用 Defender，并刷新状态。
+        /// </summary>
         private void button2_Click(object sender, EventArgs e)
         {
             var MainWindow = this.ParentForm as MainWindow;

@@ -5,6 +5,10 @@ using System.Windows.Forms;
 
 namespace ZyperWin__
 {
+    /// <summary>
+    /// 主窗口类，负责程序主界面、菜单切换与单实例控制。
+    /// 负责显示不同功能页面（如系统优化、垃圾清理、Office 管理等）。
+    /// </summary>
     public partial class MainWindow : AntdUI.Window
     {
         private static Mutex mutex;
@@ -21,6 +25,11 @@ namespace ZyperWin__
                 return paras;
             }
         }
+        /// <summary>
+        /// 启用或禁用左侧菜单（线程安全）。
+        /// 在非 UI 线程调用时会通过 Invoke 切换到 UI 线程执行。
+        /// </summary>
+        /// <param name="enabled">是否启用菜单</param>
         public void SetMenuEnabled(bool enabled)
         {
             if (this.InvokeRequired)
@@ -32,6 +41,9 @@ namespace ZyperWin__
                 menu1.Enabled = enabled;
             }
         }
+        /// <summary>
+        /// 构造函数：检查单实例，初始化 DPI 缩放与组件，并显示主页。
+        /// </summary>
         public MainWindow()
         {
             // 单实例检查
@@ -48,6 +60,11 @@ namespace ZyperWin__
             ShowForm(() => new MainMenu());
         }
 
+        /// <summary>
+        /// 检查并阻止程序重复启动（通过全局 Mutex）。
+        /// 如果检测到已有实例，会弹出提示并尝试关闭当前窗口。
+        /// </summary>
+        /// <returns>方法尝试创建互斥体，若已有其他实例存在则显示提示并触发关闭逻辑。</returns>
         private bool IsSingleInstance()
         {
             bool createdNew;
@@ -187,6 +204,11 @@ namespace ZyperWin__
             }
         }
 
+        /// <summary>
+        /// 在主窗口的右侧面板中显示指定的控件（通常是一个功能页面）。
+        /// 会清空面板并将新的控件以 DockStyle.Fill 添加进去。
+        /// </summary>
+        /// <param name="createControl">用于创建要显示控件的工厂方法</param>
         private void ShowForm(Func<Control> createControl)
         {
             panel1.SuspendLayout();

@@ -9,12 +9,19 @@ using System.Windows.Forms;
 
 namespace ZyperWin__
 {
+    /// <summary>
+    /// Edge 组件管理窗口：检测 Edge、Edge WebView、Edge Core 的安装状态，提供卸载与控制更新服务的功能。
+    /// 使用外部批处理和 NSudo 提权工具执行卸载/启停操作，并在界面上反馈状态。
+    /// </summary>
     public partial class Edge : AntdUI.Window
     {
         private string edgePath = "";
         private string edgeWebViewPath = "";
         private string edgeCorePath = "";
         private bool isProcessingCheckbox = false; // 添加这个字段
+        /// <summary>
+        /// 构造函数：初始化组件、冻结操作控件并触发状态检测流程。
+        /// </summary>
         public Edge()
         {
             InitializeComponent();
@@ -26,6 +33,9 @@ namespace ZyperWin__
             DetectAllStatus();
         }
 
+        /// <summary>
+        /// 检测所有相关状态（安装、服务等），并在控制台输出检测进度。
+        /// </summary>
         private void DetectAllStatus()
         {
             Console.WriteLine("开始检测所有状态...");
@@ -39,6 +49,9 @@ namespace ZyperWin__
             Console.WriteLine("所有状态检测完成");
         }
 
+        /// <summary>
+        /// 检测 Edge 及其相关组件的安装状态，确定安装路径与版本，并更新界面标签与按钮。
+        /// </summary>
         private void DetectEdgeInstallation()
         {
             Console.WriteLine("开始检测Edge安装状态...");
@@ -74,6 +87,9 @@ namespace ZyperWin__
             Console.WriteLine("Edge安装状态检测完成");
         }
 
+        /// <summary>
+        /// 根据给定的基路径检测指定组件是否安装，并设置对应的状态标签、版本信息与操作按钮状态。
+        /// </summary>
         private void DetectAndSetEdgeStatus(string basePath, AntdUI.Label statusLabel, AntdUI.Label versionLabel, ref string targetPath, string appName, AntdUI.Button correspondingButton)
         {
             bool isInstalled = false;
@@ -132,6 +148,9 @@ namespace ZyperWin__
             SetButtonEnabled(correspondingButton, isInstalled, appName);
         }
 
+        /// <summary>
+        /// 在 UI 线程上设置按钮是否可用，并打印日志。
+        /// </summary>
         private void SetButtonEnabled(AntdUI.Button button, bool enabled, string appName)
         {
             if (this.InvokeRequired)
@@ -144,6 +163,9 @@ namespace ZyperWin__
             Console.WriteLine($"{appName} 按钮状态: {(enabled ? "启用" : "禁用")}");
         }
 
+        /// <summary>
+        /// 根据当前系统中组件的安装情况决定是否启用“卸载全部”按钮。
+        /// </summary>
         private void RefreshUninstallAllButton()
         {
             if (this.InvokeRequired)
@@ -168,6 +190,9 @@ namespace ZyperWin__
             Console.WriteLine($"卸载全部按钮状态: Edge[{edgeInstalled}] WebView[{webViewInstalled}] Core[{coreInstalled}] => {anyComponentInstalled}");
         }
 
+        /// <summary>
+        /// 检查指定路径下是否存在有效的版本目录以及安装器（setup.exe）。
+        /// </summary>
         private bool CheckComponentInstalled(string basePath)
         {
             if (!Directory.Exists(basePath))
@@ -189,6 +214,9 @@ namespace ZyperWin__
         }
 
         // 检查是否为版本目录
+        /// <summary>
+        /// 判断目录名是否符合版本号格式（例如 x.x.x.x）。
+        /// </summary>
         private bool IsVersionDirectory(string dirName)
         {
             // 版本目录应该是 x.x.x.x 格式的数字
@@ -196,6 +224,9 @@ namespace ZyperWin__
         }
 
         // 获取最新版本目录
+        /// <summary>
+        /// 在多个版本目录中选取版本号最大的目录并返回其路径。
+        /// </summary>
         private string GetLatestVersionDirectory(string[] versionDirs)
         {
             var versions = new List<Version>();
@@ -227,6 +258,9 @@ namespace ZyperWin__
             return versionDirs[0];
         }
 
+        /// <summary>
+        /// 在界面上标记指定组件为“未安装”并重置路径与版本显示。
+        /// </summary>
         private void SetNotInstalled(AntdUI.Label statusLabel, AntdUI.Label versionLabel, ref string targetPath, string appName)
         {
             statusLabel.Text = "未安装";
@@ -261,6 +295,9 @@ namespace ZyperWin__
         }
 
         // 使用NSudo执行批处理
+        /// <summary>
+        /// 使用 NSudo 提权工具执行指定的批处理文件（例如卸载脚本），并在完成后刷新状态。
+        /// </summary>
         private void ExecuteBatchWithNSudo(string batchFile, string operationName)
         {
             string batchPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Bin", batchFile);
@@ -355,6 +392,9 @@ namespace ZyperWin__
         }
 
         // 设置所有操作控件的启用状态
+        /// <summary>
+        /// 设置所有操作相关控件（按钮、复选框）是否可用，线程安全地在 UI 线程上执行。
+        /// </summary>
         private void SetAllOperationControlsEnabled(bool enabled)
         {
             if (this.InvokeRequired)
@@ -373,6 +413,9 @@ namespace ZyperWin__
         }
 
         // 检查服务状态
+        /// <summary>
+        /// 检查 Edge 更新服务（edgeupdate）的状态并根据结果设置复选框状态。
+        /// </summary>
         private void CheckUpdateServiceStatus()
         {
             try
@@ -437,6 +480,9 @@ namespace ZyperWin__
             }
         }
 
+        /// <summary>
+        /// 调用 sc 命令检查指定服务是否存在（通过返回码判断）。
+        /// </summary>
         private bool CheckServiceExists(string serviceName)
         {
             try
@@ -468,6 +514,9 @@ namespace ZyperWin__
             }
         }
 
+        /// <summary>
+        /// 强制刷新所有检测状态：重置变量、清空标签并重新触发检测流程。
+        /// </summary>
         private void ForceRefreshStatus()
         {
             try
@@ -503,6 +552,9 @@ namespace ZyperWin__
             }
         }
 
+        /// <summary>
+        /// 将所有状态标签重置为“检测中...”初始状态并刷新界面。
+        /// </summary>
         private void ResetAllLabels()
         {
             // Edge
@@ -525,12 +577,18 @@ namespace ZyperWin__
             Application.DoEvents();
         }
 
+        /// <summary>
+        /// 窗口加载事件：再次触发状态检测以确保显示信息最新。
+        /// </summary>
         private void Edge_Load(object sender, EventArgs e)
         {
             // 窗口加载时再次检测确保状态正确
             DetectAllStatus();
         }
 
+        /// <summary>
+        /// 复选框切换事件：根据勾选状态执行启用/禁用更新服务的批处理，带并发保护。
+        /// </summary>
         private void checkbox1_CheckedChanged(object sender, AntdUI.BoolEventArgs e)
         {
             // 如果复选框被禁用，直接返回
@@ -567,6 +625,9 @@ namespace ZyperWin__
             }
         }
 
+        /// <summary>
+        /// 为复选框操作执行指定批处理（通过 NSudo），并在完成后刷新服务状态与界面控件。
+        /// </summary>
         private void ExecuteBatchForCheckbox(string batchFile, string operationName)
         {
             string batchPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Bin", batchFile);

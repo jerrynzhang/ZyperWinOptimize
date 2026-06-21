@@ -6,13 +6,23 @@ using System.Windows.Forms;
 
 namespace ZyperWin__
 {
+    /// <summary>
+    /// 备份/还原配置页面：用于列出存放于 Config 文件夹中的 INI 配置文件，便于管理和还原。
+    /// </summary>
     public partial class Backup : UserControl
     {
+        /// <summary>
+        /// 构造函数：初始化界面并加载配置文件列表到树视图。
+        /// </summary>
         public Backup()
         {
             InitializeComponent();
             LoadIniFileListToTree();
         }
+        /// <summary>
+        /// 扫描 `Config` 文件夹，加载所有 INI 文件并按时间排序显示到 tree1。
+        /// 若目录或文件不存在，会在界面中给出提示信息。
+        /// </summary>
         private void LoadIniFileListToTree()
         {
             try
@@ -70,6 +80,11 @@ namespace ZyperWin__
         }
 
         // 格式化文件大小显示
+        /// <summary>
+        /// 将字节数格式化为可读的字符串（B/KB/MB/GB）。
+        /// </summary>
+        /// <param name="bytes">文件大小（字节）</param>
+        /// <returns>格式化后的大小字符串</returns>
         private string FormatFileSize(long bytes)
         {
             string[] sizes = { "B", "KB", "MB", "GB" };

@@ -13,6 +13,10 @@ using System.Xml.Linq;
 
 namespace ZyperWin__
 {
+    /// <summary>
+    /// 系统优化页面控件：从配置文件加载可选优化项，展示树状项并允许用户选择/应用优化。
+    /// 包含多种预设（基础/深度）和导出选择到执行列表的功能。
+    /// </summary>
     public partial class Optimize : UserControl
     {
         private string xmlFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Bin", "ZyperData.xml");
@@ -24,6 +28,9 @@ namespace ZyperWin__
         // 需要重启资源管理器的分类
         private readonly string[] explorerCategories = { "explorer", "外观/资源管理器" };
 
+        /// <summary>
+        /// 构造函数：初始化组件、加载 XML 配置并构建树视图及默认状态。
+        /// </summary>
         public Optimize()
         {
             InitializeComponent();
@@ -53,6 +60,9 @@ namespace ZyperWin__
             tree1.MouseClick += Tree1_MouseClick_Simple;
         }
 
+        /// <summary>
+        /// 初始化左侧树视图，按分类加载所有可选的优化项并展开节点。
+        /// </summary>
         private void InitializeTreeView()
         {
             tree1.Items.Clear();
@@ -229,6 +239,12 @@ namespace ZyperWin__
             tree1.ExpandAll();
         }
 
+        /// <summary>
+        /// 向父分类添加一个子项（TreeItem），并设置其显示文本与内部 Tag 键。
+        /// </summary>
+        /// <param name="parent">父分类节点</param>
+        /// <param name="text">显示文本</param>
+        /// <param name="commandKey">用于标识该项的键值（Tag）</param>
         private void AddTreeItem(TreeItem parent, string text, string commandKey)
         {
             var item = new TreeItem(text) { Checked = false, Tag = commandKey };
@@ -563,6 +579,10 @@ namespace ZyperWin__
             label2.Text = "已选择深度优化项目\n（包含高级选项，请注意风险）";
         }
 
+        /// <summary>
+        /// 根据给定的一组 Tag 名称勾选对应的项目，使其出现在右侧执行列表中。
+        /// </summary>
+        /// <param name="tagNames">要选中的 Tag 名称</param>
         private void SelectItemsByTag(params string[] tagNames)
         {
             foreach (var category in tree1.Items)
@@ -580,6 +600,9 @@ namespace ZyperWin__
             tree1.Invalidate();
         }
 
+        /// <summary>
+        /// 将左侧树视图中被勾选的项目导出到右侧的执行树（tree2），用于显示将要应用的优化项。
+        /// </summary>
         private void ExportSelectedToTree2()
         {
             tree2.Items.Clear(); // 清空tree2现有内容
@@ -615,6 +638,11 @@ namespace ZyperWin__
         private DateTime lastClickTime = DateTime.MinValue;
 
         // 简化的点击处理方法 - 只在必要时刷新
+        /// <summary>
+        /// 简化的鼠标点击处理器：响应对 tree1 的点击，更新右侧说明或导出选中项（带防抖）。
+        /// </summary>
+        /// <param name="sender">事件发送者</param>
+        /// <param name="e">鼠标事件参数</param>
         private void Tree1_MouseClick_Simple(object sender, MouseEventArgs e)
         {
             try
@@ -705,6 +733,10 @@ namespace ZyperWin__
         }
 
         // 根据tag更新label的文字说明
+        /// <summary>
+        /// 根据项的 Tag 值更新右侧说明标签的文本，提供每个优化项的详细说明。
+        /// </summary>
+        /// <param name="tag">项目的 Tag 标识</param>
         private void UpdateLabelBasedOnTag(string tag)
         {
             if (string.IsNullOrEmpty(tag))

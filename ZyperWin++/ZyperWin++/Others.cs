@@ -3,8 +3,14 @@ using System.Diagnostics;
 
 namespace ZyperWin__
 {
+    /// <summary>
+    /// 其他工具窗口：提供一些附加工具的快速入口（例如资源管理器相关工具、更新工具等）。
+    /// </summary>
     public partial class Others : AntdUI.Window
     {
+        /// <summary>
+        /// 构造函数：初始化组件。
+        /// </summary>
         public Others()
         {
             InitializeComponent();

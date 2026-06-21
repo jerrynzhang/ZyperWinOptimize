@@ -5,6 +5,9 @@ using System.Windows.Forms;
 
 namespace ZyperWin__
 {
+    /// <summary>
+    /// Office 管理页面：提供在线安装不同版本 Office 的入口，并支持调用卸载脚本卸载 Office。
+    /// </summary>
     public partial class Office : UserControl
     {
         public Office()
@@ -12,6 +15,9 @@ namespace ZyperWin__
             InitializeComponent();
         }
 
+        /// <summary>
+        /// 从 AntdUI.Select 控件中获取选中的文本或值，按多种属性顺序尝试读取。
+        /// </summary>
         private string GetSelectText(AntdUI.Select selectControl)
         {
             if (selectControl.SelectedIndex >= 0 && selectControl.SelectedIndex < selectControl.Items.Count)
@@ -34,6 +40,9 @@ namespace ZyperWin__
             return selectControl.Text;
         }
 
+        /// <summary>
+        /// 响应安装按钮：根据用户选择构建模板 URL，并通过 PowerShell 执行在线安装脚本。
+        /// </summary>
         private void ButtonInstall_Click(object sender, EventArgs e)
         {
             ButtonInstall.Enabled = false;

@@ -6,6 +6,10 @@ using System.Windows.Forms;
 
 namespace ZyperWin__
 {
+    /// <summary>
+    /// 激活页面：提供调用本地批处理脚本（MAS_AIO_CN.cmd）进行 Office/Windows 激活的入口。
+    /// 包含脚本执行的异步封装与用户提示。
+    /// </summary>
     public partial class Activate : UserControl
     {
         public Activate()
@@ -18,6 +22,9 @@ namespace ZyperWin__
             Process.Start("https://github.com/cmontage/mas-cn");
         }
 
+        /// <summary>
+        /// 响应“开始激活”按钮：检查批处理文件是否存在并异步执行，完成后提示用户。
+        /// </summary>
         private async void button1_Click(object sender, EventArgs e)
         {
             button1.Enabled = false;
@@ -53,6 +60,10 @@ namespace ZyperWin__
             }
         }
 
+        /// <summary>
+        /// 异步执行指定的 CMD 文件，等待其完成并在失败时抛出异常。
+        /// </summary>
+        /// <param name="filePath">CMD 文件的完整路径</param>
         private async Task ExecuteCmdFile(string filePath)
         {
             await Task.Run(() =>

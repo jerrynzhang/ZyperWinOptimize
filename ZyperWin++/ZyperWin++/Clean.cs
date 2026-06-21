@@ -9,16 +9,29 @@ using System.Windows.Forms;
 
 namespace ZyperWin__
 {
+    /// <summary>
+    /// 垃圾清理页面：定义多个清理命令，允许用户选择要执行的清理项并以异步方式执行这些清理操作。
+    /// 支持取消、进度显示与超时保护。
+    /// </summary>
     public partial class Clean : UserControl
     {
+        /// <summary>
+        /// 清理命令字典：键为命令名称，值为包含命令字符串的CleanupCommand对象。
+        /// </summary>
         private Dictionary<string, CleanupCommand> cleanupCommands = new Dictionary<string, CleanupCommand>();
         private CancellationTokenSource _cancellationTokenSource;
 
+        /// <summary>
+        /// 清理命令函数
+        /// </summary>
         private class CleanupCommand
         {
             public string Command { get; set; }
         }
 
+        /// <summary>
+        /// 构造函数：初始化组件、命令字典以及界面树视图。
+        /// </summary>
         public Clean()
         {
             InitializeComponent();
@@ -26,6 +39,9 @@ namespace ZyperWin__
             InitializeTreeView();
         }
 
+        /// <summary>
+        /// 初始化可用的清理命令集合（cleanupCommands），每项包含要执行的命令字符串。
+        /// </summary>
         private void InitializeCommands()
         {
             cleanupCommands = new Dictionary<string, CleanupCommand>
@@ -54,6 +70,9 @@ namespace ZyperWin__
             };
         }
 
+        /// <summary>
+        /// 构建树视图，按分类列出所有清理选项并默认勾选。
+        /// </summary>
         private void InitializeTreeView()
         {
             tree1.Items.Clear();
@@ -97,12 +116,19 @@ namespace ZyperWin__
             tree1.ExpandAll();
         }
 
+        /// <summary>
+        /// 向父节点添加子项，并设置其 Tag 为命令键。
+        /// </summary>
         private void AddTreeItem(TreeItem parent, string text, string commandKey)
         {
             var item = new TreeItem(text) { Checked = true, Tag = commandKey };
             parent.Sub.Add(item);
         }
 
+        /// <summary>
+        /// 响应“开始清理”按钮：收集选择的项目，确认后以异步方式逐项执行清理命令并显示进度。
+        /// 支持取消操作并在完成或取消后恢复 UI 状态。
+        /// </summary>
         private async void button1_Click(object sender, EventArgs e)
         {
             var MainWindow = this.ParentForm as MainWindow;
@@ -207,6 +233,9 @@ namespace ZyperWin__
         }
 
         // 获取显示名称的方法
+        /// <summary>
+        /// 根据命令键返回用于显示的中文名称（用于构建确认提示）。
+        /// </summary>
         private string GetDisplayName(string commandKey)
         {
             switch (commandKey)
@@ -237,6 +266,12 @@ namespace ZyperWin__
         }
 
         // 异步执行清理命令
+        /// <summary>
+        /// 异步执行指定的清理命令，启动外部 cmd 进程并等待完成或超时，返回是否成功。
+        /// </summary>
+        /// <param name="commandKey">清理命令键</param>
+        /// <param name="cancellationToken">取消令牌</param>
+        /// <returns>成功返回 true，否则 false</returns>
         private async Task<bool> ExecuteCleanupCommandAsync(string commandKey, CancellationToken cancellationToken)
         {
             return await Task.Run(() =>
@@ -299,6 +334,9 @@ namespace ZyperWin__
             });
         }
 
+        /// <summary>
+        /// 从树视图中收集被勾选的清理项，返回其对应的命令键列表。
+        /// </summary>
         private List<string> GetSelectedItems()
         {
             var selectedItems = new List<string>();

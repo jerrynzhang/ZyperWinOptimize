@@ -7,6 +7,10 @@ using System.Windows.Forms;
 
 namespace ZyperWin__
 {
+    /// <summary>
+    /// Appx 管理页面：列出已安装的可卸载 UWP/应用包，支持选择并批量卸载。
+    /// 使用 PowerShell 获取包列表并调用 Remove-AppxPackage 执行卸载。
+    /// </summary>
     public partial class Appx : UserControl
     {
         public Appx()
@@ -15,6 +19,9 @@ namespace ZyperWin__
             this.Load += new System.EventHandler(this.Appx_Load);
         }
 
+        /// <summary>
+        /// 页面加载事件：异步加载应用列表并初始化交互事件与进度条。
+        /// </summary>
         private async void Appx_Load(object sender, EventArgs e)
         {
             await LoadAppListAsync();
@@ -34,6 +41,9 @@ namespace ZyperWin__
             }
         }
 
+        /// <summary>
+        /// 异步调用 PowerShell 获取当前可卸载应用的完整包名列表，并填充到界面列表中。
+        /// </summary>
         private async Task LoadAppListAsync()
         {
             try
@@ -116,6 +126,9 @@ namespace ZyperWin__
             }
         }
 
+        /// <summary>
+        /// 响应“开始卸载”按钮：收集用户勾选的包并依次调用 PowerShell 卸载，显示进度与结果。
+        /// </summary>
         private async void button1_Click(object sender, EventArgs e)
         {
             List<string> selectedPackages = new List<string>();
@@ -229,6 +242,9 @@ namespace ZyperWin__
         }
 
         // 使用相同的进度条设置方法
+        /// <summary>
+        /// 设置进度条的当前值（兼容不同控件实现）。
+        /// </summary>
         private void SetProgressValue(int value)
         {
             try
@@ -242,6 +258,9 @@ namespace ZyperWin__
             catch { }
         }
 
+        /// <summary>
+        /// 设置进度条的最大值（兼容不同控件属性名）。
+        /// </summary>
         private void SetProgressMax(int max)
         {
             try
@@ -263,6 +282,9 @@ namespace ZyperWin__
         }
 
         // 添加加载状态设置方法
+        /// <summary>
+        /// 以“加载”状态显示或隐藏进度控件，兼容 AntdUI 的状态枚举或回退为 Visible。
+        /// </summary>
         private void SetProgressStateLoading(bool isLoading)
         {
             try
